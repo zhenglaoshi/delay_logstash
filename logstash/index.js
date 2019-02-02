@@ -1,0 +1,1 @@
+exports.delay_logstash = require('./lib/DelayLogstash');
