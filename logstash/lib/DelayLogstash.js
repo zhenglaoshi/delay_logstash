@@ -27,7 +27,7 @@ class DelayLogstash extends EventEmitter {
 		const _this = this;
 		setInterval(function(){
 			if(_this.queue.length) {
-				const data = _this.queue;
+				const data = _this.queue.slice();
 				_this.logstash.send(data, function(err){
 					if(err) {
 						slogger.error('elk 发送数据失败',err);
