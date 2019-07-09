@@ -40,20 +40,21 @@ class DelayLogstash extends EventEmitter {
 		}, _this.delayTime);
 	}
 	pushQueue(data) {
+		const _this = this;
 		if(Array.isArray(data)) {
-			this.queue = this.queue.concat(data);
+			_this.queue = _this.queue.concat(data);
 		} else {
-			this.queue.push(data); 
+			_this.queue.push(data); 
 		}
-		if(this.queue.length >= this.maxSize) {
-			const data = this.queue.slice();
-			this.logstash.send(data, function(err){
+		if(_this.queue.length >= _this.maxSize) {
+			const data = _this.queue.slice();
+			_this.logstash.send(data, function(err){
 				if(err) {
 					slogger.error('elk 发送数据失败',err);
 				}
-				this.emit(DelayLogstash.EVENT_SEND_ERROR, err);
+				_this.emit(DelayLogstash.EVENT_SEND_ERROR, err);
 			});
-			this.queue = [];
+			_this.queue = [];
 		}
 	}
 }
