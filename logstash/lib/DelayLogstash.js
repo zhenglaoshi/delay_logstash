@@ -3,7 +3,7 @@ const Logstash = require('logstash-client');
 const slogger = require('node-slogger');
 
 class DelayLogstash extends EventEmitter {
-	constructor({type, host,  port, delayTime=200}) {
+	constructor({type, host,  port, delayTime=200, maxSize=10}) {
 		super();
 		if (!type || !host || !port) {
 			throw new Error('参数错误');
@@ -43,6 +43,16 @@ class DelayLogstash extends EventEmitter {
 			this.queue = this.queue.concat(data);
 		} else {
 			this.queue.push(data); 
+		}
+		if(this.queue.length >= maxSize) {
+			const data = this.queue.slice();
+			this.logstash.send(data, function(err){
+				if(err) {
+					slogger.error('elk 发送数据失败',err);
+				}
+				this.emit(DelayLogstash.EVENT_SEND_ERROR, err);
+			});
+			this.queue = [];
 		}
 	}
 }

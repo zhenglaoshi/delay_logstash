@@ -1,6 +1,6 @@
 {
   "name": "delay_logstash",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "logstash延时批量发送",
   "main": "./logstash/index.js",
   "scripts": {
