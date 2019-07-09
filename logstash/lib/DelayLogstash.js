@@ -32,8 +32,9 @@ class DelayLogstash extends EventEmitter {
 				_this.logstash.send(data, function(err){
 					if(err) {
 						slogger.error('elk 发送数据失败',err);
+						_this.emit(DelayLogstash.EVENT_SEND_ERROR, err);
 					}
-					_this.emit(DelayLogstash.EVENT_SEND_ERROR, err);
+					
 				});
 				_this.queue = [];
 			}
@@ -51,8 +52,9 @@ class DelayLogstash extends EventEmitter {
 			_this.logstash.send(data, function(err){
 				if(err) {
 					slogger.error('elk 发送数据失败',err);
+					_this.emit(DelayLogstash.EVENT_SEND_ERROR, err);
 				}
-				_this.emit(DelayLogstash.EVENT_SEND_ERROR, err);
+				
 			});
 			_this.queue = [];
 		}
