@@ -3,7 +3,7 @@ const Logstash = require('logstash-client');
 const slogger = require('node-slogger');
 
 class DelayLogstash extends EventEmitter {
-	constructor({type, host,  port, delayTime, maxSize=10}) {
+	constructor({type, host,  port, delayTime, maxSize=10, maxQueueSize=1000}) {
 		super();
 		if (!type || !host || !port) {
 			throw new Error('参数错误');
@@ -13,16 +13,26 @@ class DelayLogstash extends EventEmitter {
 		this.type = type;
 		this.host = host;
 		this.port = port;
+		this.maxQueueSize = maxQueueSize;
 		this.maxSize = maxSize;
 		this._logstashInit();
 		this._delaySend();
 	}
 	_logstashInit() {
-		this.logstash = new Logstash({
-			type: this.type,
-			host: this.host,
-			port: this.port
-		});
+		if(this.maxQueueSize) {
+			this.logstash = new Logstash({
+				type: this.type,
+				host: this.host,
+				port: this.port,
+				maxQueueSize: this.maxQueueSize
+			});
+		} else {
+			this.logstash = new Logstash({
+				type: this.type,
+				host: this.host,
+				port: this.port
+			});
+		}
 	}
 	_delaySend(){
 		const _this = this;
